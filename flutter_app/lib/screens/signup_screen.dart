@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../backend/samp.dart';
 
 class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
@@ -15,6 +18,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _signUp() {
     if (_formKey.currentState!.validate()) {
+      signUp(_emailController.text, _passwordController.text,
+          _usernameController.text);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Signup Successful!")),
       );

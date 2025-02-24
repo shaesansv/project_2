@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
-import 'scanner_screen.dart';
-import 'signup_screen.dart'; // Import the signup screen
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_app/backend/samp.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
-    String username = _usernameController.text;
-    String password = _passwordController.text;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
-    if (username == "admin" && password == "password") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => ScannerScreen()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Invalid credentials")),
-      );
-    }
+  void _login() {
+    login(_emailController.text, _passwordController.text,context);
   }
 
   @override
@@ -40,55 +35,55 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         child: Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32.0),
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
             child: Card(
               elevation: 10,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Padding(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
+                    const Text(
                       "Welcome Back!",
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade900,
                         fontFamily: 'Montserrat',
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 10),
+                    const Text(
                       "Please login to continue",
-                      style:
-                          TextStyle(fontSize: 16, color: Colors.grey.shade700),
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                    // Reduced Width Text Fields
+                    // Email Field
                     SizedBox(
                       width: 250,
                       child: TextField(
-                        controller: _usernameController,
+                        controller: _emailController,
                         decoration: InputDecoration(
-                          labelText: "Username",
-                          prefixIcon: Icon(Icons.person),
+                          labelText: "Email",
+                          prefixIcon: const Icon(Icons.email),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10)),
                         ),
                       ),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
+
+                    // Password Field
                     SizedBox(
                       width: 250,
                       child: TextField(
                         controller: _passwordController,
                         decoration: InputDecoration(
                           labelText: "Password",
-                          prefixIcon: Icon(Icons.lock),
+                          prefixIcon: const Icon(Icons.lock),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10)),
                         ),
@@ -96,18 +91,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
+
+                    // Login Button
                     SizedBox(
                       width: 180,
                       child: ElevatedButton(
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                           backgroundColor: Colors.blue.shade900,
                         ),
-                        child: Text(
+                        child: const Text(
                           "Login",
                           style: TextStyle(
                               fontSize: 18,
@@ -117,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
 
                     // Sign Up Link
                     GestureDetector(

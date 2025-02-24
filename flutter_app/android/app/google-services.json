@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "48527931947",
+    "firebase_url": "https://web-vulnerablity-db-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "web-vulnerablity-db",
+    "storage_bucket": "web-vulnerablity-db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48527931947:android:692be33c60d3445805486e",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "48527931947-06nasbl92ofh6kt8budbsmefutt1l5vi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXROKzOi9V9d8-OIIpHKZAOdCbV3s9LjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "48527931947-06nasbl92ofh6kt8budbsmefutt1l5vi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48527931947:android:fe788ac3ebc76fc005486e",
+        "android_client_info": {
+          "package_name": "google_1.signin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "48527931947-06nasbl92ofh6kt8budbsmefutt1l5vi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXROKzOi9V9d8-OIIpHKZAOdCbV3s9LjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "48527931947-06nasbl92ofh6kt8budbsmefutt1l5vi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48527931947:android:0932ccace6b18f6905486e",
+        "android_client_info": {
+          "package_name": "samp.login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "48527931947-06nasbl92ofh6kt8budbsmefutt1l5vi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXROKzOi9V9d8-OIIpHKZAOdCbV3s9LjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "48527931947-06nasbl92ofh6kt8budbsmefutt1l5vi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
