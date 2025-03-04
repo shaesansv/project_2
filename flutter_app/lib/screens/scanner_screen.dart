@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ScannerScreen extends StatefulWidget {
-  const ScannerScreen({super.key});
+  const ScannerScreen({Key? key}) : super(key: key);
 
   @override
   _ScannerScreenState createState() => _ScannerScreenState();
@@ -19,11 +19,22 @@ class _ScannerScreenState extends State<ScannerScreen> {
   String? _downloadLink;
   double _progress = 0.0;
 
+  final Map<String, Color> vulnerabilityColors = {
+    "sql_injection": Colors.redAccent,
+    "xss": Colors.orangeAccent,
+    "csrf": Colors.purpleAccent,
+    "open_redirect": Colors.greenAccent,
+    "security_headers": Colors.blueAccent,
+    "command_injection": Colors.deepOrange,
+    "file_inclusion": Colors.teal,
+    "weak_passwords": Colors.brown,
+  };
+
   Future<void> scanUrl() async {
     final url = _urlController.text.trim();
     if (url.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please enter a valid URL")),
+        const SnackBar(content: Text("Please enter a valid URL")),
       );
       return;
     }
@@ -38,7 +49,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
     try {
       for (double i = 0.0; i <= 1.0; i += 0.2) {
-        await Future.delayed(Duration(milliseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 500));
         setState(() => _progress = i);
       }
 
@@ -71,7 +82,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
         await launchUrl(url);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Could not open download link")),
+          const SnackBar(content: Text("Could not open download link")),
         );
       }
     }
@@ -83,8 +94,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
         title: Text("Vulnerability Scanner",
-            style:
-                GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.bold)),
+            style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
         elevation: 5,
@@ -95,7 +105,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             colors: [
               Colors.purple.shade200,
               Colors.blue.shade300,
-              Colors.green.shade200
+              Colors.green.shade200,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -105,43 +115,33 @@ class _ScannerScreenState extends State<ScannerScreen> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(color: Colors.grey.shade400, blurRadius: 6),
-                  ],
-                ),
-                child: TextField(
-                  controller: _urlController,
-                  decoration: InputDecoration(
-                    labelText: "Enter URL",
-                    labelStyle: GoogleFonts.poppins(
-                        color: Colors.blueAccent, fontSize: 18),
-                    prefixIcon:
-                        Icon(Icons.link, color: Colors.blueAccent, size: 28),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
+              TextField(
+                controller: _urlController,
+                decoration: InputDecoration(
+                  labelText: "Enter URL",
+                  labelStyle: GoogleFonts.poppins(
+                      color: Colors.blueAccent, fontSize: 18),
+                  prefixIcon: const Icon(Icons.link, color: Colors.blueAccent, size: 28),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
               ElevatedButton.icon(
                 onPressed: scanUrl,
-                icon: Icon(Icons.search, size: 28),
+                icon: const Icon(Icons.search, size: 28),
                 label: Text("Scan", style: GoogleFonts.poppins(fontSize: 20)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent,
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 28),
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 28),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                 ),
               ),
-              SizedBox(height: 25),
+              const SizedBox(height: 25),
               _isLoading
                   ? Column(
                       children: [
@@ -152,7 +152,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                               color: Colors.green,
                               minHeight: 10),
                         ),
-                        SizedBox(height: 25),
+                        const SizedBox(height: 25),
                         Text("Scanning... ${(100 * _progress).toInt()}%",
                             style: GoogleFonts.poppins(fontSize: 22)),
                       ],
@@ -161,18 +161,23 @@ class _ScannerScreenState extends State<ScannerScreen> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: _results.entries.map((entry) {
+                            final color = vulnerabilityColors[entry.key] ?? Colors.grey;
                             return Card(
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 14),
+                              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
                               elevation: 6,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15)),
                               child: ListTile(
+                                tileColor: color.withOpacity(0.1),
+                                leading: CircleAvatar(
+                                  backgroundColor: color,
+                                  child: Icon(Icons.security, color: Colors.white),
+                                ),
                                 title: Text(entry.key.toUpperCase(),
                                     style: GoogleFonts.poppins(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.blueAccent)),
+                                        color: color)),
                                 subtitle: Text(entry.value.toString(),
                                     style: GoogleFonts.poppins(fontSize: 18)),
                               ),
@@ -181,17 +186,17 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         ),
                       ),
                     ),
-              if (_downloadLink != null) SizedBox(height: 25),
+              if (_downloadLink != null) const SizedBox(height: 25),
               if (_downloadLink != null)
                 ElevatedButton.icon(
                   onPressed: _downloadReport,
-                  icon: Icon(Icons.download, size: 28),
+                  icon: const Icon(Icons.download, size: 28),
                   label: Text("Download Report",
                       style: GoogleFonts.poppins(fontSize: 20)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 28),
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 28),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
