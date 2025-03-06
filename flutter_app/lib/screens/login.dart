@@ -19,9 +19,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
   void _login() {
-    login(_emailController.text, _passwordController.text,context);
+    login(_emailController.text, _passwordController.text, context);
+    
   }
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

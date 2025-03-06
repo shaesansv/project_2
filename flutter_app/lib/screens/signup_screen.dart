@@ -19,7 +19,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void _signUp() {
     if (_formKey.currentState!.validate()) {
       signUp(_emailController.text, _passwordController.text,
-          _usernameController.text);
+          _usernameController.text, context);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Signup Successful!")),
       );

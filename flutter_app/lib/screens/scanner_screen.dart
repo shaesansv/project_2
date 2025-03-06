@@ -94,117 +94,105 @@ class _ScannerScreenState extends State<ScannerScreen> {
       backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
         title: Text("Vulnerability Scanner",
-            style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.bold)),
+            style:
+                GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
         elevation: 5,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.purple.shade200,
-              Colors.blue.shade300,
-              Colors.green.shade200,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: _urlController,
-                decoration: InputDecoration(
-                  labelText: "Enter URL",
-                  labelStyle: GoogleFonts.poppins(
-                      color: Colors.blueAccent, fontSize: 18),
-                  prefixIcon: const Icon(Icons.link, color: Colors.blueAccent, size: 28),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            // TextField for URL input
+            TextField(
+              controller: _urlController,
+              decoration: InputDecoration(
+                labelText: "Enter Website URL",
+                prefixIcon: const Icon(Icons.link, color: Colors.blueAccent),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                filled: true,
+                fillColor: Colors.white,
               ),
-              const SizedBox(height: 25),
-              ElevatedButton.icon(
-                onPressed: scanUrl,
-                icon: const Icon(Icons.search, size: 28),
-                label: Text("Scan", style: GoogleFonts.poppins(fontSize: 20)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 28),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: scanUrl,
+              icon: const Icon(Icons.search),
+              label: const Text("Scan"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 28),
               ),
-              const SizedBox(height: 25),
-              _isLoading
-                  ? Column(
-                      children: [
-                        SizedBox(
-                          height: 20,
-                          child: LinearProgressIndicator(
-                              value: _progress,
-                              color: Colors.green,
-                              minHeight: 10),
-                        ),
-                        const SizedBox(height: 25),
-                        Text("Scanning... ${(100 * _progress).toInt()}%",
-                            style: GoogleFonts.poppins(fontSize: 22)),
-                      ],
-                    )
-                  : Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: _results.entries.map((entry) {
-                            final color = vulnerabilityColors[entry.key] ?? Colors.grey;
-                            return Card(
-                              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                              elevation: 6,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: ListTile(
-                                tileColor: color.withOpacity(0.1),
-                                leading: CircleAvatar(
-                                  backgroundColor: color,
-                                  child: Icon(Icons.security, color: Colors.white),
-                                ),
-                                title: Text(entry.key.toUpperCase(),
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: color)),
-                                subtitle: Text(entry.value.toString(),
-                                    style: GoogleFonts.poppins(fontSize: 18)),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+            ),
+            const SizedBox(height: 20),
+            // Common Vulnerabilities List
+            ExpansionTile(
+              title: Text("🛡️ Common Web Vulnerabilities",
+                  style: GoogleFonts.poppins(
+                      fontSize: 22, fontWeight: FontWeight.bold)),
+              children: [
+                vulnerabilityTile("🚨 SQL Injection (SQLi)",
+                    "Hackers insert malicious SQL queries into input fields to access or manipulate the database."),
+                vulnerabilityTile("⚠️ Cross-Site Scripting (XSS)",
+                    "Attackers inject malicious JavaScript into web pages to steal cookies, session tokens, or redirect users."),
+                vulnerabilityTile("🔄 Cross-Site Request Forgery (CSRF)",
+                    "Hackers trick users into performing unwanted actions, such as changing passwords or making transactions."),
+                vulnerabilityTile("📂 File Inclusion Vulnerabilities",
+                    "Attackers include malicious files to execute arbitrary code on the server."),
+                vulnerabilityTile("🛑 Weak Security Headers",
+                    "Poor HTTP headers allow attackers to intercept and manipulate web requests."),
+                vulnerabilityTile("🔐 Weak Passwords & Authentication Issues",
+                    "Weak passwords allow brute-force attacks where hackers try thousands of passwords."),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _isLoading
+                ? LinearProgressIndicator(value: _progress, color: Colors.green)
+                : Expanded(
+                    child: ListView(
+                      children: _results.entries.map((entry) {
+                        final color =
+                            vulnerabilityColors[entry.key] ?? Colors.grey;
+                        return Card(
+                          child: ListTile(
+                            tileColor: color.withOpacity(0.1),
+                            leading: CircleAvatar(
+                                backgroundColor: color,
+                                child:
+                                    Icon(Icons.security, color: Colors.white)),
+                            title: Text(entry.key.toUpperCase(),
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold)),
+                            subtitle: Text(entry.value.toString()),
+                          ),
+                        );
+                      }).toList(),
                     ),
-              if (_downloadLink != null) const SizedBox(height: 25),
-              if (_downloadLink != null)
-                ElevatedButton.icon(
-                  onPressed: _downloadReport,
-                  icon: const Icon(Icons.download, size: 28),
-                  label: Text("Download Report",
-                      style: GoogleFonts.poppins(fontSize: 20)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 28),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
                   ),
-                ),
-            ],
-          ),
+            if (_downloadLink != null)
+              ElevatedButton.icon(
+                onPressed: _downloadReport,
+                icon: const Icon(Icons.download),
+                label: const Text("Download Report"),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white),
+              ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget vulnerabilityTile(String title, String description) {
+    return ListTile(
+      title:
+          Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+      subtitle: Text(description, style: GoogleFonts.poppins(fontSize: 14)),
     );
   }
 }
