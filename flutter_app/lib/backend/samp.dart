@@ -30,44 +30,10 @@ void login(String email, String password, BuildContext context) async {
           userData["password"] == password) {
         userFound = true;
 
-        // Show login success popup
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Login Successful"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("Welcome, ${userData["username"]}!"),
-                const SizedBox(height: 10),
-                // Logout Link Label
-                GestureDetector(
-                  onTap: () => logout(context),
-                  child: Text(
-                    "Logout",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.red.shade700,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close popup
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => ScannerScreen()),
-                  );
-                },
-                child: Text("OK"),
-              ),
-            ],
-          ),
+        // Navigate to ScannerScreen on successful login
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ScannerScreen()),
         );
         break;
       }
@@ -113,12 +79,4 @@ void signUp(String email, String password, String username,
 
     showSnackBar(context, "User registered successfully!", isError: false);
   }
-}
-
-// Logout Function
-void logout(BuildContext context) {
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => LoginScreen()),
-  );
 }

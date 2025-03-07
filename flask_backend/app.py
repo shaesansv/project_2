@@ -12,10 +12,10 @@ from vulnerabilities.csrf import test_csrf
 from vulnerabilities.open_redirect import test_open_redirect
 from vulnerabilities.security_headers import test_security_headers
 
-# Newly added scanners
-from vulnerabilities.command_injection import test_command_injection
-from vulnerabilities.file_inclusion import test_file_inclusion
-from vulnerabilities.weak_passwords import test_weak_passwords
+# # Newly added scanners
+# from vulnerabilities.command_injection import test_command_injection
+# from vulnerabilities.file_inclusion import test_file_inclusion
+# from vulnerabilities.weak_passwords import test_weak_passwords
 
 app = Flask(__name__)
 CORS(app)
@@ -68,9 +68,9 @@ def scan():
         "csrf": test_csrf(url),
         "open_redirect": test_open_redirect(url),
         "security_headers": test_security_headers(url),
-        "command_injection": test_command_injection(url),
-        "file_inclusion": test_file_inclusion(url),
-        "weak_passwords": test_weak_passwords(url)
+        # "command_injection": test_command_injection(url),
+        # "file_inclusion": test_file_inclusion(url),
+        # "weak_passwords": test_weak_passwords(url)
     }
 
     # Generate PDF report and prepare response

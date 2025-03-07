@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ScannerScreen extends StatefulWidget {
-  const ScannerScreen({Key? key}) : super(key: key);
+  const ScannerScreen({super.key});
 
   @override
   _ScannerScreenState createState() => _ScannerScreenState();
@@ -18,6 +18,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   bool _isLoading = false;
   String? _downloadLink;
   double _progress = 0.0;
+  int _progressPercentage = 0;
 
   final Map<String, Color> vulnerabilityColors = {
     "sql_injection": Colors.redAccent,
@@ -45,12 +46,16 @@ class _ScannerScreenState extends State<ScannerScreen> {
       _results = {};
       _downloadLink = null;
       _progress = 0.0;
+      _progressPercentage = 0;
     });
 
     try {
-      for (double i = 0.0; i <= 1.0; i += 0.2) {
+      for (int i = 0; i <= 100; i += 20) {
         await Future.delayed(const Duration(milliseconds: 500));
-        setState(() => _progress = i);
+        setState(() {
+          _progress = i / 100;
+          _progressPercentage = i;
+        });
       }
 
       final response = await http.post(
@@ -117,6 +122,21 @@ class _ScannerScreenState extends State<ScannerScreen> {
               ),
             ),
             const SizedBox(height: 20),
+            _isLoading
+                ? Column(
+                    children: [
+                      LinearProgressIndicator(
+                        value: _progress,
+                        color: Colors.green,
+                      ),
+                      const SizedBox(height: 20),
+                      Text("Scanning: $_progressPercentage%",
+                          style: GoogleFonts.poppins(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+            const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: scanUrl,
               icon: const Icon(Icons.search),
@@ -133,7 +153,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             ExpansionTile(
               title: Text("🛡️ Common Web Vulnerabilities",
                   style: GoogleFonts.poppins(
-                      fontSize: 22, fontWeight: FontWeight.bold)),
+                      fontSize: 30, fontWeight: FontWeight.bold)),
               children: [
                 vulnerabilityTile("🚨 SQL Injection (SQLi)",
                     "Hackers insert malicious SQL queries into input fields to access or manipulate the database."),
@@ -145,34 +165,28 @@ class _ScannerScreenState extends State<ScannerScreen> {
                     "Attackers include malicious files to execute arbitrary code on the server."),
                 vulnerabilityTile("🛑 Weak Security Headers",
                     "Poor HTTP headers allow attackers to intercept and manipulate web requests."),
-                vulnerabilityTile("🔐 Weak Passwords & Authentication Issues",
-                    "Weak passwords allow brute-force attacks where hackers try thousands of passwords."),
               ],
             ),
             const SizedBox(height: 20),
-            _isLoading
-                ? LinearProgressIndicator(value: _progress, color: Colors.green)
-                : Expanded(
-                    child: ListView(
-                      children: _results.entries.map((entry) {
-                        final color =
-                            vulnerabilityColors[entry.key] ?? Colors.grey;
-                        return Card(
-                          child: ListTile(
-                            tileColor: color.withOpacity(0.1),
-                            leading: CircleAvatar(
-                                backgroundColor: color,
-                                child:
-                                    Icon(Icons.security, color: Colors.white)),
-                            title: Text(entry.key.toUpperCase(),
-                                style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.bold)),
-                            subtitle: Text(entry.value.toString()),
-                          ),
-                        );
-                      }).toList(),
+            Expanded(
+              child: ListView(
+                children: _results.entries.map((entry) {
+                  final color = vulnerabilityColors[entry.key] ?? Colors.grey;
+                  return Card(
+                    child: ListTile(
+                      tileColor: color.withOpacity(0.1),
+                      leading: CircleAvatar(
+                          backgroundColor: color,
+                          child: Icon(Icons.security, color: Colors.white)),
+                      title: Text(entry.key.toUpperCase(),
+                          style:
+                              GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+                      subtitle: Text(entry.value.toString()),
                     ),
-                  ),
+                  );
+                }).toList(),
+              ),
+            ),
             if (_downloadLink != null)
               ElevatedButton.icon(
                 onPressed: _downloadReport,
