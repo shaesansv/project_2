@@ -50,28 +50,44 @@ class _ScannerScreenState extends State<ScannerScreen> {
     });
 
     try {
-      for (int i = 0; i <= 100; i += 20) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        setState(() {
-          _progress = i / 100;
-          _progressPercentage = i;
-        });
-      }
+      // Simulate progress based on scan steps
+      // Assume we have some stages in the scan process
+      final scanStages = [
+        "Connecting to server",
+        "Scanning SQL Injection",
+        "Scanning XSS",
+        "Scanning CSRF",
+        "Finalizing scan"
+      ];
 
-      final response = await http.post(
-        Uri.parse("http://127.0.0.1:5000/scan"),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode({"url": url}),
-      );
+      for (int i = 0; i < scanStages.length; i++) {
+        await Future.delayed(
+            const Duration(seconds: 2)); // Simulating time for each stage
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        // Update progress
         setState(() {
-          _results = data["results"];
-          _downloadLink = "http://127.0.0.1:5000" + data["download_link"];
+          _progress = (i + 1) / scanStages.length;
+          _progressPercentage = ((_progress) * 100).toInt();
         });
-      } else {
-        setState(() => _error = "Error: ${response.statusCode}");
+
+        if (i == scanStages.length - 1) {
+          // Mock successful response once the scanning is done
+          final response = await http.post(
+            Uri.parse("http://127.0.0.1:5000/scan"),
+            headers: {"Content-Type": "application/json"},
+            body: json.encode({"url": url}),
+          );
+
+          if (response.statusCode == 200) {
+            final data = json.decode(response.body);
+            setState(() {
+              _results = data["results"];
+              _downloadLink = "http://127.0.0.1:5000" + data["download_link"];
+            });
+          } else {
+            setState(() => _error = "Error: ${response.statusCode}");
+          }
+        }
       }
     } catch (e) {
       setState(() => _error = "Error: $e");
@@ -99,9 +115,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
       backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
         title: Text("Vulnerability Scanner",
-            style:
-                GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.blueAccent,
+            style: GoogleFonts.poppins(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple)),
+        backgroundColor: const Color.fromARGB(255, 128, 135, 239),
         centerTitle: true,
         elevation: 5,
       ),
@@ -129,7 +147,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         value: _progress,
                         color: Colors.green,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 40),
                       Text("Scanning: $_progressPercentage%",
                           style: GoogleFonts.poppins(
                               fontSize: 16, fontWeight: FontWeight.bold)),
@@ -153,7 +171,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             ExpansionTile(
               title: Text("🛡️ Common Web Vulnerabilities",
                   style: GoogleFonts.poppins(
-                      fontSize: 30, fontWeight: FontWeight.bold)),
+                      fontSize: 40, fontWeight: FontWeight.bold)),
               children: [
                 vulnerabilityTile("🚨 SQL Injection (SQLi)",
                     "Hackers insert malicious SQL queries into input fields to access or manipulate the database."),

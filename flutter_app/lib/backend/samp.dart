@@ -1,6 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/screens/login.dart';
 import 'package:flutter_app/screens/scanner_screen.dart';
 
 void showSnackBar(BuildContext context, String message,
