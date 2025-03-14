@@ -15,8 +15,7 @@ from vulnerabilities.command_injection import test_command_injection
 from vulnerabilities.insecure_deserialization import test_insecure_deserialization
 from vulnerabilities.directory_traversal import test_directory_traversal
 from vulnerabilities.weak_authentication_machanism import test_weak_authentication
-from vulnerabilities.redirect import scan_rce
-
+from vulnerabilities.ssrf import is_internal_ip
 app = Flask(__name__)
 CORS(app)
 
@@ -66,13 +65,13 @@ def scan():
         "sql_injection": test_sql_injection(url),
         "xss": test_xss(url),
         "csrf": test_csrf(url),
+        "ssrf": is_internal_ip(url),
         "open_redirect": test_open_redirect(url),
         "security_headers": test_security_headers(url),
         "command_injection": test_command_injection(url),
         "insecure deserialization": test_insecure_deserialization(url),
         "directory": test_directory_traversal(url),
         "weak authentication": test_weak_authentication(url),
-        "Unvalidated Redirect or Forward": scan_rce(url),
     }
 
     # Generate PDF report and prepare response
