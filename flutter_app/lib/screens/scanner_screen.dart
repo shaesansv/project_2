@@ -159,53 +159,117 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         vertical: 16, horizontal: 28)),
               ),
               const SizedBox(height: 20),
-              ExpansionTile(
-                title: Text("🛡️ Common Web Vulnerabilities",
-                    style: GoogleFonts.poppins(
-                        fontSize: 40, fontWeight: FontWeight.bold)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  vulnerabilityTile("🚨 SQL Injection (SQLi)",
-                      "SQL Injection (SQLi) is a critical web security vulnerability that occurs when an attacker manipulates an application's SQL queries by injecting malicious input into form fields, URLs, or HTTP headers. This vulnerability arises when user-supplied data is directly incorporated into SQL statements without proper validation or sanitization."),
-                  vulnerabilityTile("⚠️ Cross-Site Scripting (XSS)",
-                      "Cross-Site Scripting (XSS) is a widespread web security vulnerability that occurs when an application fails to properly sanitize user input, allowing attackers to inject malicious scripts into trusted web pages. These scripts are then executed in the context of a user's browser, leading to various security risks such as data theft, session hijacking, website defacement, and phishing attacks."),
-                  vulnerabilityTile("🔄 Cross-Site Request Forgery (CSRF)",
-                      "Cross-Site Request Forgery (CSRF) is a web security vulnerability that forces authenticated users to unknowingly execute unwanted actions on a web application in which they are currently authenticated. An attacker leverages the victim's active session to send malicious requests, effectively tricking the server into performing actions on behalf of the user without their consent."),
-                  vulnerabilityTile("📂 File Inclusion Vulnerabilities",
-                      "File inclusion vulnerabilities are a serious security issue that occurs when an application dynamically loads or includes files without properly validating user input. These vulnerabilities arise when an attacker can manipulate file paths or file names, leading to the inclusion of unintended files from local or remote sources. File inclusion vulnerabilities are commonly found in web applications that use scripting languages like PHP, Python, or Ruby."),
-                  vulnerabilityTile("🛑 Weak Security Headers",
-                      "Weak security headers are a common and critical vulnerability in web applications that occur when HTTP response headers are misconfigured, missing, or improperly implemented. These headers play a crucial role in enforcing security policies within web browsers, protecting against various attacks such as cross-site scripting (XSS), clickjacking, MIME-type sniffing, and data exposure."),
-                  vulnerabilityTile("💻 Command Injection",
-                      "Command injection is a critical security vulnerability that occurs when an application inadequately handles user input, allowing an attacker to execute arbitrary system commands on the host server. This vulnerability arises when user-supplied data is directly incorporated into command-line instructions without proper sanitization or validation."),
-                  vulnerabilityTile("🔓 Insecure Deserialization",
-                      "Insecure deserialization is a critical security vulnerability that arises when untrusted data is deserialized without proper validation or integrity checks. This vulnerability occurs when applications accept serialized objects from untrusted sources and deserialize them without ensuring their authenticity or safety. Attackers exploit this weakness to manipulate serialized data and inject malicious payloads, leading to severe consequences such as remote code execution (RCE), data tampering, denial of service (DoS), and privilege escalation."),
-                  vulnerabilityTile("📝 Directory Traversal",
-                      "Directory traversal, also known as path traversal, is a web security vulnerability that allows an attacker to access files and directories stored outside the intended directory. This vulnerability occurs when the application fails to properly sanitize user-supplied input, leading to unauthorized access to sensitive files and system information."),
-                  vulnerabilityTile("🌐 Server Side Request Forgery (SSRF)",
-                      "Server-Side Request Forgery (SSRF) is a critical web vulnerability that occurs when an attacker manipulates a server to send unauthorized requests to internal or external systems. Unlike client-side attacks, SSRF targets the server itself, exploiting its ability to perform HTTP or other protocol-based requests on behalf of the attacker."),
-                  vulnerabilityTile("🔑 Weak Authentication Mechanisms",
-                      "Weak authentication mechanisms are a significant security vulnerability in modern applications, posing severe risks to data confidentiality, integrity, and system availability. These vulnerabilities arise when authentication processes are poorly designed, implemented, or configured, allowing unauthorized users to gain access to sensitive systems and data."),
+                  Text(
+                    "🛡️ Common Web Vulnerabilities",
+                    style: GoogleFonts.poppins(
+                        fontSize: 40, fontWeight: FontWeight.bold),
+                  ),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(8),
+                    childAspectRatio: 2.0,
+                    children: [
+                      for (var tile in [
+                        [
+                          "🚨 SQL Injection (SQLi)",
+                          "SQL Injection (SQLi) is a critical web security vulnerability that occurs when an attacker manipulates an application's SQL queries by injecting malicious input into form fields, URLs, or HTTP headers. This vulnerability arises when user-supplied data is directly incorporated into SQL statements without proper validation or sanitization."
+                        ],
+                        [
+                          "⚠️ Cross-Site Scripting (XSS)",
+                          "Cross-Site Scripting (XSS) is a widespread web security vulnerability that occurs when an application fails to properly sanitize user input, allowing attackers to inject malicious scripts into trusted web pages. These scripts are then executed in the context of a user's browser, leading to various security risks such as data theft, session hijacking, website defacement, and phishing attacks."
+                        ],
+                        [
+                          "🔄 Cross-Site Request Forgery (CSRF)",
+                          "Cross-Site Request Forgery (CSRF) is a web security vulnerability that forces authenticated users to unknowingly execute unwanted actions on a web application in which they are currently authenticated. An attacker leverages the victim's active session to send malicious requests, effectively tricking the server into performing actions on behalf of the user without their consent."
+                        ],
+                        [
+                          "📂 File Inclusion Vulnerabilities",
+                          "File inclusion vulnerabilities are a serious security issue that occurs when an application dynamically loads or includes files without properly validating user input. These vulnerabilities arise when an attacker can manipulate file paths or file names, leading to the inclusion of unintended files from local or remote sources. File inclusion vulnerabilities are commonly found in web applications that use scripting languages like PHP, Python, or Ruby."
+                        ],
+                        [
+                          "🛑 Weak Security Headers",
+                          "Weak security headers are a common and critical vulnerability in web applications that occur when HTTP response headers are misconfigured, missing, or improperly implemented. These headers play a crucial role in enforcing security policies within web browsers, protecting against various attacks such as cross-site scripting (XSS), clickjacking, MIME-type sniffing, and data exposure."
+                        ],
+                        [
+                          "💻 Command Injection",
+                          "Command injection is a critical security vulnerability that occurs when an application inadequately handles user input, allowing an attacker to execute arbitrary system commands on the host server. This vulnerability arises when user-supplied data is directly incorporated into command-line instructions without proper sanitization or validation."
+                        ],
+                        [
+                          "🔓 Insecure Deserialization",
+                          "Insecure deserialization is a critical security vulnerability that arises when untrusted data is deserialized without proper validation or integrity checks. This vulnerability occurs when applications accept serialized objects from untrusted sources. Attackers exploit this weakness to manipulate serialized data and inject malicious payloads, leading to severe consequences such as remote code execution (RCE), data tampering, denial of service (DoS), and privilege escalation."
+                        ],
+                        [
+                          "📝 Directory Traversal",
+                          "Directory traversal, also known as path traversal, is a web security vulnerability that allows an attacker to access files and directories stored outside the intended directory. This vulnerability occurs when the application fails to properly sanitize user-supplied input, leading to unauthorized access to sensitive files and system information."
+                        ],
+                        [
+                          "🌐 Server Side Request Forgery (SSRF)",
+                          "Server-Side Request Forgery (SSRF) is a critical web vulnerability that occurs when an attacker manipulates a server to send unauthorized requests to internal or external systems. Unlike client-side attacks, SSRF targets the server itself, exploiting its ability to perform HTTP or other protocol-based requests on behalf of the attacker."
+                        ],
+                        [
+                          "🔑 Weak Authentication Mechanisms",
+                          "Weak authentication mechanisms are a significant security vulnerability in modern applications, posing severe risks to data confidentiality, integrity, and system availability. These vulnerabilities arise when authentication processes are poorly designed, implemented, or configured, allowing unauthorized users to gain access to sensitive systems and data."
+                        ]
+                      ])
+                        GestureDetector(
+                          onTap: () {
+                            print("Tile clicked: ${tile[0]}");
+                            // Add any desired onClick functionality here.
+                          },
+                          child: MouseRegion(
+                            onEnter: (_) {},
+                            onExit: (_) {},
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                    color: Colors.grey.shade300, width: 4),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              transform: Matrix4.identity()..scale(1.02),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    tile[0],
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    tile[1],
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 20,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
-              ListView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: _results.entries.map((entry) {
-                  final color = vulnerabilityColors[entry.key] ?? Colors.grey;
-                  return Card(
-                    child: ListTile(
-                      tileColor: color.withOpacity(0.1),
-                      leading: CircleAvatar(
-                          backgroundColor: color,
-                          child: Icon(Icons.security, color: Colors.white)),
-                      title: Text(entry.key.toUpperCase(),
-                          style:
-                              GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-                      subtitle: Text(entry.value.toString()),
-                    ),
-                  );
-                }).toList(),
-              ),
               if (_downloadLink != null)
                 ElevatedButton.icon(
                   onPressed: _downloadReport,
