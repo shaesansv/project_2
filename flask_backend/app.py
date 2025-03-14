@@ -11,11 +11,11 @@ from vulnerabilities.xss import test_xss
 from vulnerabilities.csrf import test_csrf
 from vulnerabilities.open_redirect import test_open_redirect
 from vulnerabilities.security_headers import test_security_headers
-
-# # Newly added scanners
-# from vulnerabilities.command_injection import test_command_injection
-# from vulnerabilities.file_inclusion import test_file_inclusion
-# from vulnerabilities.weak_passwords import test_weak_passwords
+from vulnerabilities.command_injection import test_command_injection
+from vulnerabilities.insecure_deserialization import test_insecure_deserialization
+from vulnerabilities.directory_traversal import test_directory_traversal
+from vulnerabilities.weak_authentication_machanism import test_weak_authentication
+from vulnerabilities.redirect import scan_rce
 
 app = Flask(__name__)
 CORS(app)
@@ -68,9 +68,11 @@ def scan():
         "csrf": test_csrf(url),
         "open_redirect": test_open_redirect(url),
         "security_headers": test_security_headers(url),
-        # "command_injection": test_command_injection(url),
-        # "file_inclusion": test_file_inclusion(url),
-        # "weak_passwords": test_weak_passwords(url)
+        "command_injection": test_command_injection(url),
+        "insecure deserialization": test_insecure_deserialization(url),
+        "directory": test_directory_traversal(url),
+        "weak authentication": test_weak_authentication(url),
+        "Unvalidated Redirect or Forward": scan_rce(url),
     }
 
     # Generate PDF report and prepare response

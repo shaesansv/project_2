@@ -50,8 +50,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
     });
 
     try {
-      // Simulate progress based on scan steps
-      // Assume we have some stages in the scan process
       final scanStages = [
         "Connecting to server",
         "Scanning SQL Injection",
@@ -61,17 +59,13 @@ class _ScannerScreenState extends State<ScannerScreen> {
       ];
 
       for (int i = 0; i < scanStages.length; i++) {
-        await Future.delayed(
-            const Duration(seconds: 2)); // Simulating time for each stage
-
-        // Update progress
+        await Future.delayed(const Duration(seconds: 2));
         setState(() {
           _progress = (i + 1) / scanStages.length;
           _progressPercentage = ((_progress) * 100).toInt();
         });
 
         if (i == scanStages.length - 1) {
-          // Mock successful response once the scanning is done
           final response = await http.post(
             Uri.parse("http://127.0.0.1:5000/scan"),
             headers: {"Content-Type": "application/json"},
@@ -123,71 +117,79 @@ class _ScannerScreenState extends State<ScannerScreen> {
         centerTitle: true,
         elevation: 5,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            // TextField for URL input
-            TextField(
-              controller: _urlController,
-              decoration: InputDecoration(
-                labelText: "Enter Website URL",
-                prefixIcon: const Icon(Icons.link, color: Colors.blueAccent),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                filled: true,
-                fillColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: _urlController,
+                decoration: InputDecoration(
+                  labelText: "Enter Website URL",
+                  prefixIcon: const Icon(Icons.link, color: Colors.blueAccent),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            _isLoading
-                ? Column(
-                    children: [
-                      LinearProgressIndicator(
-                        value: _progress,
-                        color: Colors.green,
-                      ),
-                      const SizedBox(height: 40),
-                      Text("Scanning: $_progressPercentage%",
-                          style: GoogleFonts.poppins(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: scanUrl,
-              icon: const Icon(Icons.search),
-              label: const Text("Scan"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 28),
+              const SizedBox(height: 20),
+              _isLoading
+                  ? Column(
+                      children: [
+                        LinearProgressIndicator(
+                            value: _progress, color: Colors.green),
+                        const SizedBox(height: 40),
+                        Text("Scanning: $_progressPercentage%",
+                            style: GoogleFonts.poppins(
+                                fontSize: 25, fontWeight: FontWeight.bold)),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: scanUrl,
+                icon: const Icon(Icons.search),
+                label: const Text("Scan"),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 28)),
               ),
-            ),
-            const SizedBox(height: 20),
-            // Common Vulnerabilities List
-            ExpansionTile(
-              title: Text("🛡️ Common Web Vulnerabilities",
-                  style: GoogleFonts.poppins(
-                      fontSize: 40, fontWeight: FontWeight.bold)),
-              children: [
-                vulnerabilityTile("🚨 SQL Injection (SQLi)",
-                    "Hackers insert malicious SQL queries into input fields to access or manipulate the database."),
-                vulnerabilityTile("⚠️ Cross-Site Scripting (XSS)",
-                    "Attackers inject malicious JavaScript into web pages to steal cookies, session tokens, or redirect users."),
-                vulnerabilityTile("🔄 Cross-Site Request Forgery (CSRF)",
-                    "Hackers trick users into performing unwanted actions, such as changing passwords or making transactions."),
-                vulnerabilityTile("📂 File Inclusion Vulnerabilities",
-                    "Attackers include malicious files to execute arbitrary code on the server."),
-                vulnerabilityTile("🛑 Weak Security Headers",
-                    "Poor HTTP headers allow attackers to intercept and manipulate web requests."),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView(
+              const SizedBox(height: 20),
+              ExpansionTile(
+                title: Text("🛡️ Common Web Vulnerabilities",
+                    style: GoogleFonts.poppins(
+                        fontSize: 40, fontWeight: FontWeight.bold)),
+                children: [
+                  vulnerabilityTile("🚨 SQL Injection (SQLi)",
+                      "Malicious SQL queries are injected to manipulate the database."),
+                  vulnerabilityTile("⚠️ Cross-Site Scripting (XSS)",
+                      "Malicious JavaScript is injected to steal data or manipulate the page."),
+                  vulnerabilityTile("🔄 Cross-Site Request Forgery (CSRF)",
+                      "Hackers trick users into performing unwanted actions, such as changing passwords or making transactions."),
+                  vulnerabilityTile("📂 File Inclusion Vulnerabilities",
+                      "Attackers include malicious files to execute arbitrary code on the server."),
+                  vulnerabilityTile("🛑 Weak Security Headers",
+                      "Poor HTTP headers allow attackers to intercept and manipulate web requests."),
+                  vulnerabilityTile("💻 Command Injection",
+                      "Malicious commands are injected to execute arbitrary OS commands on the server."),
+                  vulnerabilityTile("🔓 Insecure Deserialization",
+                      "Exploits vulnerabilities arising from insecure object deserialization."),
+                  vulnerabilityTile("📝 Directory Traversal",
+                      "Directory traversal, also known as path traversal, is a web security vulnerability that allows an attacker to access files and directories stored outside the intended directory. This vulnerability occurs when the application fails to properly sanitize user-supplied input, leading to unauthorized access to sensitive files and system information."),
+                  vulnerabilityTile("🌐 Unvalidated Redirects and Forwards",
+                      "Poor URL validation allows redirection to malicious sites."),
+                  vulnerabilityTile("🔑 Weak Authentication Mechanisms",
+                      "Poor authentication practices may allow unauthorized access."),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 children: _results.entries.map((entry) {
                   final color = vulnerabilityColors[entry.key] ?? Colors.grey;
                   return Card(
@@ -204,17 +206,17 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   );
                 }).toList(),
               ),
-            ),
-            if (_downloadLink != null)
-              ElevatedButton.icon(
-                onPressed: _downloadReport,
-                icon: const Icon(Icons.download),
-                label: const Text("Download Report"),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white),
-              ),
-          ],
+              if (_downloadLink != null)
+                ElevatedButton.icon(
+                  onPressed: _downloadReport,
+                  icon: const Icon(Icons.download),
+                  label: const Text("Download Report"),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white),
+                ),
+            ],
+          ),
         ),
       ),
     );

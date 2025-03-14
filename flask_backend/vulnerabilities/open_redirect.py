@@ -14,9 +14,9 @@ def test_open_redirect(url):
             full_url = url + payload
             response = requests.get(full_url, allow_redirects=False)
             if response.status_code in [301, 302] and "malicious.com" in response.headers.get("Location", ""):
-                results.append({"payload": payload, "vulnerable": True})
+                results.append({"payload": payloads, "vulnerable": True})
             else:
-                results.append({"payload": payload, "vulnerable": False})
+                results.append({"payload": payloads, "vulnerable": False})
         except Exception as e:
             return {"error": f"Error testing Open Redirect: {str(e)}"}
 
