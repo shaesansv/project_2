@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key});
@@ -108,14 +109,57 @@ class _ScannerScreenState extends State<ScannerScreen> {
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
-        title: Text("Vulnerability Scanner",
-            style: GoogleFonts.poppins(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple)),
-        backgroundColor: const Color.fromARGB(255, 128, 135, 239),
+        title: Container(
+          height: 500, // Increased height
+          width: double.infinity, // Full width
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurple.shade700, Colors.blueAccent.shade400],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 8,
+                offset: Offset(2, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.security,
+                  color: Colors.white, size: 60), // Larger icon
+              SizedBox(width: 12),
+              AnimatedTextKit(
+                animatedTexts: [
+                  ColorizeAnimatedText(
+                    "Vulnerability Scanner",
+                    textStyle: GoogleFonts.poppins(
+                      fontSize: 42,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    colors: [
+                      Colors.white,
+                      Colors.lightBlueAccent,
+                      Colors.deepPurpleAccent,
+                      Colors.blueAccent,
+                    ],
+                    speed: const Duration(milliseconds: 300),
+                  ),
+                ],
+                isRepeatingAnimation: true,
+                repeatForever: true,
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         centerTitle: true,
-        elevation: 5,
       ),
       body: SingleChildScrollView(
         child: Padding(
