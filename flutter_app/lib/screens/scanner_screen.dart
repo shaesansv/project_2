@@ -12,7 +12,8 @@ class ScannerScreen extends StatefulWidget {
   _ScannerScreenState createState() => _ScannerScreenState();
 }
 
-class _ScannerScreenState extends State<ScannerScreen> {
+class _ScannerScreenState extends State<ScannerScreen>
+    with SingleTickerProviderStateMixin {
   final _urlController = TextEditingController();
   Map<String, dynamic> _results = {};
   String _error = "";
@@ -23,6 +24,8 @@ class _ScannerScreenState extends State<ScannerScreen> {
   int _progressPercentage = 0;
   bool _isHovering1 = false;
   bool _isHovering2 = false;
+  late AnimationController _floatingController;
+  late Animation<Offset> _floatingAnimation;
 
   final Map<String, Color> vulnerabilityColors = {
     "sql_injection": Colors.redAccent,
@@ -109,13 +112,37 @@ class _ScannerScreenState extends State<ScannerScreen> {
     }
   }
 
+  void initState() {
+    super.initState();
+
+    // Initialize floating animation
+    _floatingController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _floatingAnimation = Tween<Offset>(
+      begin: const Offset(0, 0),
+      end: const Offset(0, -0.10), // Slight upward float
+    ).animate(CurvedAnimation(
+      parent: _floatingController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _floatingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey[50],
+      backgroundColor: Colors.grey[600], // Light gray background
       appBar: AppBar(
         title: Container(
-          height: 500, // Increased height
+          height: 700, // Increased height
           width: double.infinity, // Full width
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           decoration: BoxDecoration(
@@ -171,41 +198,46 @@ class _ScannerScreenState extends State<ScannerScreen> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              // Hacking Images
-              const SizedBox(height: 20),
+              // Floating Image Row with Hover Effect
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // First Image with Hover Animation
+                  // First Image with Floating and Hover Animation
                   MouseRegion(
                     onEnter: (_) => setState(() => _isHovering1 = true),
                     onExit: (_) => setState(() => _isHovering1 = false),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      transform: Matrix4.identity()
-                        ..scale(_isHovering1 ? 1.1 : 1.0),
-                      child: Image.asset(
-                        'lib/images/hacking1.jpg',
-                        width: 150,
-                        height: 200,
+                    child: SlideTransition(
+                      position: _floatingAnimation,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        transform: Matrix4.identity()
+                          ..scale(_isHovering1 ? 1.1 : 1.0),
+                        child: Image.asset(
+                          'lib/images/face12.png',
+                          width: 300,
+                          height: 300,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 20),
-                  // Second Image with Hover Animation
+                  // Second Image with Floating and Hover Animation
                   MouseRegion(
                     onEnter: (_) => setState(() => _isHovering2 = true),
                     onExit: (_) => setState(() => _isHovering2 = false),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      transform: Matrix4.identity()
-                        ..scale(_isHovering2 ? 1.1 : 1.0),
-                      child: Image.asset(
-                        'lib/images/hacking2.jpg',
-                        width: 150,
-                        height: 150,
+                    child: SlideTransition(
+                      position: _floatingAnimation,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        transform: Matrix4.identity()
+                          ..scale(_isHovering2 ? 1.1 : 1.0),
+                        child: Image.asset(
+                          'lib/images/sheald12.png',
+                          width: 300,
+                          height: 300,
+                        ),
                       ),
                     ),
                   ),
@@ -369,21 +401,21 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   ),
                 ),
                 style: ButtonStyle(
-                  padding: MaterialStateProperty.all(
+                  padding: WidgetStateProperty.all(
                     const EdgeInsets.symmetric(vertical: 18, horizontal: 36),
                   ),
-                  shape: MaterialStateProperty.all(
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  backgroundColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.pressed)) {
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.pressed)) {
                       return Colors.blue.withOpacity(0.8);
                     }
                     return Colors.blueAccent;
                   }),
-                  elevation: MaterialStateProperty.all(5),
+                  elevation: WidgetStateProperty.all(5),
                 ),
               ),
               const SizedBox(height: 20),
@@ -417,14 +449,20 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   Text(
                     "🛡️ Common Web Vulnerabilities",
                     style: GoogleFonts.poppins(
-                        fontSize: 40, fontWeight: FontWeight.bold),
+                      fontSize: 40, // Reduced font size
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   GridView.count(
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(8),
-                    childAspectRatio: 2.0,
+                    padding: const EdgeInsets.all(4), // Reduced padding
+                    mainAxisSpacing: 8, // Gap between rows
+                    crossAxisSpacing: 8, // Gap between columns
+                    childAspectRatio:
+                        3.0, // Increased aspect ratio to make tiles narrower and shorter
                     children: [
                       for (var tile in [
                         [
@@ -471,25 +509,31 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         GestureDetector(
                           onTap: () {
                             print("Tile clicked: ${tile[0]}");
-                            // Add any desired onClick functionality here.
                           },
                           child: MouseRegion(
                             onEnter: (_) {},
                             onExit: (_) {},
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 300),
-                              margin: const EdgeInsets.all(10),
-                              padding: const EdgeInsets.all(20),
+                              margin: const EdgeInsets.all(8),
+                              padding:
+                                  const EdgeInsets.all(16), // Reduced padding
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
+                                color: Colors
+                                    .grey.shade300, // Light gray tile color
+                                borderRadius: BorderRadius.circular(
+                                    15), // Reduced border radius
                                 border: Border.all(
-                                    color: Colors.grey.shade300, width: 4),
+                                  color: Colors
+                                      .grey.shade400, // Subtle gray border
+                                  width: 3,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    blurRadius: 20,
-                                    offset: const Offset(0, 4),
+                                    color: Colors.black
+                                        .withOpacity(0.05), // Softer shadow
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
@@ -500,16 +544,20 @@ class _ScannerScreenState extends State<ScannerScreen> {
                                   Text(
                                     tile[0],
                                     style: GoogleFonts.poppins(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24, // Reduced font size
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey
+                                          .shade800, // Darker text for contrast
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 4),
                                   Text(
                                     tile[1],
+                                    textAlign: TextAlign.justify,
                                     style: GoogleFonts.poppins(
-                                      fontSize: 20,
-                                      color: Colors.grey.shade600,
+                                      fontSize: 16, // Reduced font size
+                                      color: Colors
+                                          .grey.shade700, // Softer gray text
                                     ),
                                   ),
                                 ],
