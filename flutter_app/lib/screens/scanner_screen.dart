@@ -17,9 +17,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
   Map<String, dynamic> _results = {};
   String _error = "";
   bool _isLoading = false;
+  bool _isScanComplete = false;
   String? _downloadLink;
   double _progress = 0.0;
   int _progressPercentage = 0;
+  bool _isHovering1 = false;
+  bool _isHovering2 = false;
 
   final Map<String, Color> vulnerabilityColors = {
     "sql_injection": Colors.redAccent,
@@ -44,6 +47,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     setState(() {
       _isLoading = true;
       _error = "";
+      _isScanComplete = false;
       _results = {};
       _downloadLink = null;
       _progress = 0.0;
@@ -78,6 +82,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             setState(() {
               _results = data["results"];
               _downloadLink = "http://127.0.0.1:5000" + data["download_link"];
+              _isScanComplete = true; // Mark scan as complete
             });
           } else {
             setState(() => _error = "Error: ${response.statusCode}");
@@ -166,6 +171,47 @@ class _ScannerScreenState extends State<ScannerScreen> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
+              // Hacking Images
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // First Image with Hover Animation
+                  MouseRegion(
+                    onEnter: (_) => setState(() => _isHovering1 = true),
+                    onExit: (_) => setState(() => _isHovering1 = false),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      transform: Matrix4.identity()
+                        ..scale(_isHovering1 ? 1.1 : 1.0),
+                      child: Image.asset(
+                        'lib/images/hacking1.jpg',
+                        width: 150,
+                        height: 200,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  // Second Image with Hover Animation
+                  MouseRegion(
+                    onEnter: (_) => setState(() => _isHovering2 = true),
+                    onExit: (_) => setState(() => _isHovering2 = false),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      transform: Matrix4.identity()
+                        ..scale(_isHovering2 ? 1.1 : 1.0),
+                      child: Image.asset(
+                        'lib/images/hacking2.jpg',
+                        width: 150,
+                        height: 150,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
               TextField(
                 controller: _urlController,
                 decoration: InputDecoration(
@@ -182,27 +228,189 @@ class _ScannerScreenState extends State<ScannerScreen> {
               _isLoading
                   ? Column(
                       children: [
-                        LinearProgressIndicator(
-                            value: _progress, color: Colors.green),
+                        const SizedBox(height: 60), // Increased spacing
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Pulse Animation Effect
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 500),
+                              width: 220,
+                              height: 220,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.greenAccent.withOpacity(0.2),
+                              ),
+                            ),
+                            // Rotating Gradient Circular Progress Bar
+                            RotationTransition(
+                              turns: AlwaysStoppedAnimation(
+                                  _progress), // Rotating effect
+                              child: SizedBox(
+                                width: 200, // Adjust the width
+                                height: 200, // Adjust the height
+                                child: TweenAnimationBuilder<double>(
+                                  tween:
+                                      Tween<double>(begin: 0, end: _progress),
+                                  duration: const Duration(
+                                      seconds: 1), // Smooth animation duration
+                                  builder: (context, value, child) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(
+                                          14.0), // Fix clipping
+                                      child: ShaderMask(
+                                        blendMode: BlendMode.srcIn,
+                                        shaderCallback: (Rect bounds) {
+                                          return SweepGradient(
+                                            startAngle: 0.0,
+                                            endAngle: 3.14 * 2,
+                                            tileMode: TileMode.repeated,
+                                            colors: [
+                                              Colors.red,
+                                              Colors.orange,
+                                              Colors.yellow,
+                                              Colors.green,
+                                              Colors.blue,
+                                              Colors.indigo,
+                                              Colors.purple,
+                                              Colors.red, // Complete the cycle
+                                            ],
+                                            stops: [
+                                              0.0,
+                                              0.14,
+                                              0.28,
+                                              0.42,
+                                              0.56,
+                                              0.70,
+                                              0.84,
+                                              1.0,
+                                            ],
+                                          ).createShader(bounds);
+                                        },
+                                        child: CircularProgressIndicator(
+                                          value: value,
+                                          strokeWidth:
+                                              15, // Thicker progress bar
+                                          valueColor:
+                                              const AlwaysStoppedAnimation<
+                                                  Color>(Colors.white),
+                                          backgroundColor: Colors.grey
+                                              .shade300, // Softer background color
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            // Percentage Text
+                            Text(
+                              "${(_progress * 100).toStringAsFixed(0)}%", // Shows percentage
+                              style: GoogleFonts.poppins(
+                                fontSize:
+                                    32, // Larger font size for better visibility
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black, // Contrast text color
+                              ),
+                            ),
+                          ],
+                        ),
                         const SizedBox(height: 40),
-                        Text("Scanning: $_progressPercentage%",
-                            style: GoogleFonts.poppins(
-                                fontSize: 25, fontWeight: FontWeight.bold)),
+                        Text(
+                          "Scanning: $_progressPercentage%",
+                          style: GoogleFonts.poppins(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green.shade700,
+                          ),
+                        ),
+                        // ✅ Display the "Download PDF HERE" text after scan is complete
+                        if (_isScanComplete)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: GestureDetector(
+                              onTap: _downloadReport,
+                              child: Text(
+                                "Download PDF HERE",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade500,
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     )
-                  : const SizedBox.shrink(),
-              const SizedBox(height: 20),
+                  : const SizedBox(),
               ElevatedButton.icon(
                 onPressed: scanUrl,
-                icon: const Icon(Icons.search),
-                label: const Text("Scan"),
-                style: ElevatedButton.styleFrom(
+                icon: const Icon(Icons.search, color: Colors.white, size: 32),
+                label: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0.0, 0.5),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    );
+                  },
+                  child: const Text(
+                    "Scan",
+                    key: ValueKey<int>(1),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(
+                    const EdgeInsets.symmetric(vertical: 18, horizontal: 36),
+                  ),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith((states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.blue.withOpacity(0.8);
+                    }
+                    return Colors.blueAccent;
+                  }),
+                  elevation: MaterialStateProperty.all(5),
+                ),
+              ),
+              const SizedBox(height: 20),
+// Display "Download PDF HERE" after scan is complete
+              if (_isScanComplete)
+                ElevatedButton.icon(
+                  onPressed: _downloadReport,
+                  icon: const Icon(Icons.download, color: Colors.white),
+                  label: Text(
+                    "Download PDF",
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 28)),
-              ),
-              const SizedBox(height: 20),
+                        vertical: 15, horizontal: 30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 5,
+                  ),
+                ),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -314,15 +522,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              if (_downloadLink != null)
-                ElevatedButton.icon(
-                  onPressed: _downloadReport,
-                  icon: const Icon(Icons.download),
-                  label: const Text("Download Report"),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white),
-                ),
             ],
           ),
         ),
