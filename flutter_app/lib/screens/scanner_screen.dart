@@ -353,7 +353,7 @@ class _ScannerScreenState extends State<ScannerScreen>
                           style: GoogleFonts.poppins(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
-                            color: Colors.green.shade700,
+                            color: Colors.white,
                           ),
                         ),
                         // ✅ Display the "Download PDF HERE" text after scan is complete
