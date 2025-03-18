@@ -64,8 +64,6 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - lib/images/hacking1.jpg
-    - lib/images/hacking2.jpg
     - lib/images/face12.png
     - lib/images/sheald12.png
 
